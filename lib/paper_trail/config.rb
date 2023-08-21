@@ -13,6 +13,7 @@ module PaperTrail
       :association_reify_error_behaviour,
       :object_changes_adapter,
       :serializer,
+      :store_after_change,
       :version_limit,
       :has_paper_trail_defaults,
       :version_error_behavior
@@ -25,6 +26,7 @@ module PaperTrail
 
       # Variables which affect all threads, whose access is *not* synchronized.
       @serializer = PaperTrail::Serializers::YAML
+      @store_after_change = false
       @has_paper_trail_defaults = {}
       @version_error_behavior = :legacy
     end
