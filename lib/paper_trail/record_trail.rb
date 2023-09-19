@@ -190,7 +190,6 @@ module PaperTrail
         # we need to look for the first version created *after* the timestamp.
         v = versions.subsequent(timestamp, true).first
         return v.reify(reify_options) if v
-        # return the current version if no version after this are found
         @record unless @record.destroyed?
       end
     end
