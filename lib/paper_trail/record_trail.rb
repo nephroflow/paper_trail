@@ -181,11 +181,17 @@ module PaperTrail
 
     # Returns the object (not a Version) as it was at the given timestamp.
     def version_at(timestamp, reify_options = {})
-      # Because a version stores how its object looked *before* the change,
-      # we need to look for the first version created *after* the timestamp.
-      v = versions.subsequent(timestamp, true).first
-      return v.reify(reify_options) if v
-      @record unless @record.destroyed?
+      if PaperTrail.config.store_after_change
+        v = versions.preceding(timestamp, true).last
+        return nil if v.nil? || v.event == "destroy"
+        v.reify(reify_options)
+      else
+        # Because a version stores how its object looked *before* the change,
+        # we need to look for the first version created *after* the timestamp.
+        v = versions.subsequent(timestamp, true).first
+        return v.reify(reify_options) if v
+        @record unless @record.destroyed?
+      end
     end
 
     # Returns the objects (not Versions) as they were between the given times.
